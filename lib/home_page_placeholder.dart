@@ -22,14 +22,31 @@ class _MainPagePlaceholderState extends State<MainPagePlaceholder>{
   var movieData = [];
   var horrorData = [];
   var dramaData = [];
+  var userId;
+
 
   @override
   void initState() {
+    fetchUserId();
     fetchMoviesByGenreData();
     fetchHorrorData();
     fetchDramaData();
     super.initState();
   }
+
+  Future<void> fetchUserId() async {
+    final response = await http.get(Uri.parse('${dotenv.env['BACKEND_HTTP']}/users/me'));
+    if (response.statusCode == 200) {
+      final decodedResponse = json.decode(response.body);
+      setState(() {
+        userId = decodedResponse['id']; // Обновляем userId с учетом поля "id" из ответа сервера
+      });
+    } else {
+      throw Exception('Не удалось получить данные пользователя');
+    }
+  }
+
+
 
   Future<void> fetchMoviesByGenreData() async {
     var requestBody = Uri.encodeFull("комедия/10");
@@ -202,9 +219,11 @@ class _MainPagePlaceholderState extends State<MainPagePlaceholder>{
         MaterialPageRoute(
           builder: (context) => MoviePage(
             filmId: movie['kinopoisk_id'],
+            userId: userId,
           ),
         ),
       );
     },
   );
 }
+

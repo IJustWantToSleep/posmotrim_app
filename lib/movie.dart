@@ -5,16 +5,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MoviePage extends StatefulWidget {
   final int filmId;
+  final int userId;
   final Key? key;
 
-  MoviePage({required this.filmId, this.key}) : super(key: key);
+  MoviePage({required this.filmId, required this.userId, this.key}) : super(key: key);
 
   @override
   _MoviePageState createState() => _MoviePageState();
 }
 
 class _MoviePageState extends State<MoviePage> {
-  Map<String, dynamic>? movieData;
+  late Map<String, dynamic>? movieData;
   List<dynamic>? recommendations;
 
   @override
@@ -149,6 +150,7 @@ class _MoviePageState extends State<MoviePage> {
                                 MaterialPageRoute(
                                   builder: (context) => MoviePage(
                                     filmId: recommendationFilmId,
+                                    userId: widget.userId, // Передача userId во вложенную страницу
                                   ),
                                 ),
                               );
@@ -161,27 +163,27 @@ class _MoviePageState extends State<MoviePage> {
                                 children: [
                                   Image.network(
                                     'https://www.kinopoisk.ru/images/film_big/${recommendation['kinopoisk_id']}.jpg',
-                                  height: 150,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  recommendation['name'].toString().toUpperCase(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    height: 150,
                                   ),
-                                  maxLines: 2, // Максимальное количество строк
-                                  overflow: TextOverflow.ellipsis, // Обрезание текста, если не помещается
-                                ),
-                              ],
+                                  SizedBox(height: 5),
+                                  Text(
+                                    recommendation['name'].toString().toUpperCase(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -222,3 +224,4 @@ class RoundedInfoBox extends StatelessWidget {
     );
   }
 }
+
